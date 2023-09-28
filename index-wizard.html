@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Buscador formulario</title>
+
+		<!-- ==== STYLES CSS ==== -->
+		<!-- Vendor -->
+		<link rel='stylesheet' href='./assets/styles/jquery-ui-1.10.0.custom.css' />
+		<link rel="stylesheet" href="./assets/styles/dashicons.min.css" />
+		<link rel='stylesheet' href='./assets/styles/daterangepicker-0.20.0.min.css?ver=6.3.1' />
+		<!-- End Vendor -->
+
+		<!-- Mybooking -->
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine.css?ver=1.10.4' />
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine-helpers.css?ver=1.10.4' />
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine-selector.css?ver=1.10.4' />
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine-components.css?ver=1.10.4' />
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine-product.css?ver=1.10.4' />
+		<link rel='stylesheet' href='./assets/styles/mybooking-engine-modals.css?ver=1.10.4' />
+		<!-- End Mybooking -->
+		
+		<!-- Custom -->
+		<link rel="stylesheet" href="./assets/styles/site-styles.css" />
+		<!-- End Custom -->
+		<!-- ==== END STYLES CSS ==== -->
+	</head>
+	<body class="mybooking-selector-wizard">
+		<!-- ==== CONTENT ==== -->
+		<section class="mybooking-selector">
+			<form name="wizard_search_form" method="get" enctype="application/x-www-form-urlencoded"></form>
+		</section>
+		<!-- ==== CONTENT ==== -->
+		
+		<!-- ==== TEMPLATES & MODALS ==== -->
+		<!-- Wizard searcher modal -->
+		<div id="wizard_container" class="selector_wizard_container mybooking-wizard_container" style="display: none">
+
+			<!-- Title -->
+			<div id="step_title" class="selector_wizard_step_title mybooking-wizard_step-title">
+				<div>mbcrentacar.test</div>
+			</div>
+		
+			<!-- Close btn -->
+			<span id="close_wizard_btn" class="selector_wizard_close_btn mybooking-wizard_close">
+				<span class="dashicons dashicons-dismiss"></span>
+			</span>
+		
+			<!-- Container -->
+			<div id="wizard_container_step" class="selector_wizard_step_container mybooking-wizard_step-container">
+				<div id="wizard_container_step_header" class="mybooking-wizard_step-header"></div>
+				<div id="wizard_container_step_body" class="mybooking-wizard_step-body"></div>
+			</div>
+		</div>
+		<!-- End Wizard searcher modal -->
+		
+		<!-- Wizard searcher (wizard_search_form) -->
+		<script type="text/tmpl" id="widget_form_selector_tmpl">
+			<% if (configuration.pickupReturnPlace) { %>
+		
+				<!-- Simple location -->
+				<% if (configuration.simpleLocation) { %>
+					<label for="widget_simple_location_id">
+						Dónde			</label>
+					<div class="widget_pickup_place_group">
+						<select class="mb-form-control" id="widget_simple_location_id" name="simple_location_id" ></select>
+					</div>
+				<% } %>
+				<!-- END Simple location -->
+		
+				<!-- // PICKUP SECTION -->
+		
+				<div class="mybooking-selector_group">
+					<div class="mybooking-selector_place">
+						<% if (configuration.pickupReturnPlace) { %>
+		
+							<!-- // Delivery place -->
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-location"></span>
+							</i>
+							<label for="pickup_place">
+								Lugar de entrega					</label>
+		
+							<!-- // List pickup place -->
+							<div class="widget_pickup_place_group">
+								<select class="mb-form-control" id="widget_pickup_place" name="pickup_place" ></select>
+							</div>
+		
+							<!-- // Custom delivery place -->
+							<div id="widget_another_pickup_place_group" style="display: none;">
+								<button class="mybooking-selector_close-btn widget_another_pickup_place_group_close">
+									<i>
+										<span class="dashicons dashicons-dismiss"></span>
+									</i>
+								</button>
+								<input class="mb-form-control" id="widget_pickup_place_other" type="text" name="pickup_place_other" />
+								<input type="hidden" name="custom_pickup_place" value="false" />
+							</div>
+		
+						<% } %>
+					</div>
+		
+					<div class="mybooking-selector_date">
+		
+						<!-- // Pickup date -->
+						<div class="mybooking-selector_cal">
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-calendar-alt"></span>
+							</i>
+							<label for="date_from">
+								Fecha entrega					</label>
+							<input class="mb-form-control" type="text" name="date_from" id="widget_date_from" autocomplete="off" readonly="true" placeholder="dd/mm/aa">
+						</div>
+		
+						<!-- // Pickup time -->
+						<% if (configuration.timeToFrom) { %>
+							<div class="mybooking-selector_hour">
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-clock"></span>
+							</i>
+							<select class="mb-form-control" id="widget_time_from" name="time_from"></select>
+							</div>
+						<% } else { %>
+							<input type="hidden" name="time_from" value="<%=configuration.defaultTimeStart%>"/>
+						<% } %>
+					</div>
+				</div>
+		
+		
+				<!-- // RETURN SECTION -->
+		
+				<div class="mybooking-selector_group">
+					<div class="mybooking-selector_place">
+						<% if (configuration.pickupReturnPlace) { %>
+		
+							<!-- // Return place -->
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-location"></span>
+							</i>
+							<label for="return_place">
+								Lugar de devolución					</label>
+		
+							<!-- // List return place -->
+							<div class="widget_return_place_group">
+								<select class="mb-form-control" name="return_place" id="widget_return_place"></select>
+							</div>
+		
+							<!-- // Custom delivery place -->
+							<div id="widget_another_return_place_group" style="display: none;">
+								<button class="mybooking-selector_close-btn widget_another_return_place_group_close">
+									<i>
+										<span class="dashicons dashicons-dismiss"></span>
+									</i>
+								</button>
+								<input class="mb-form-control" id="widget_return_place_other" type="text" name="return_place_other" />
+								<input type="hidden" name="custom_return_place" value="false" />
+							</div>
+		
+						<% } %>
+					</div>
+		
+					<div class="mybooking-selector_date">
+		
+						<% if (configuration.rentDateSelector === 'date_from_duration') { %>
+							<!-- // Duration -->
+							<div class="mybooking-selector_duration">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-clock"></span>
+								</i>
+								<label for="widget_renting_duration">
+									Duración						</label>
+								<select class="mb-form-control" id="widget_renting_duration" name="renting_duration"></select>
+							</div>
+						<% } else if (configuration.rentDateSelector === 'date_from_date_to') { %>	
+							<!-- // Return date -->
+							<div class="mybooking-selector_cal">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-calendar-alt"></span>
+								</i>
+								<label for="date_to">
+									Fecha devolución						</label>
+								<input type="text" class="mb-form-control" name="date_to" id="widget_date_to" autocomplete="off" readonly="true" placeholder="dd/mm/aa">
+							</div>
+		
+							<!-- // Return time -->
+							<% if (configuration.timeToFrom) { %>
+								<div class="mybooking-selector_hour">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-clock"></span>
+								</i>
+								<select class="mb-form-control" name="time_to" id="widget_time_to"></select>
+								</div>
+							<% } else { %>
+								<input type="hidden" name="time_to" value="<%=configuration.defaultTimeEnd%>"/>
+							<% } %>
+						<% } %>
+					</div>
+				</div>
+		
+		
+				<!-- // FOOTER -->
+		
+				<div class="mybooking-selector_group mybooking-selector_footer">
+		
+					<!-- // Location code selector -->
+					<% if (not_hidden_rental_location_code && configuration.selectorRentalLocation) { %>
+						<div class="widget_rental_location" style="display: none">
+							<label for="rental_location_code">
+								Sucursal					</label>
+							<select name="rental_location_code" id="widget_rental_location_code" class="mb-form-control"></select>
+						</div>
+					<% } %>
+		
+					<!-- // Family selector -->
+					<% if (not_hidden_family_id && configuration.selectFamily) { %>
+						<div class="widget_family" style="display: none">
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-list-view"></span>
+							</i>
+							<label for="family_id">
+								Familia					</label>
+							<select name="family_id" id="widget_family_id" class="mb-form-control"></select>
+						</div>
+					<% } %>
+		
+					<!-- Age code selector -->
+					<div class="driver_age_rule" style="display: none">
+						<label for="driver_age_rule_id">
+						Selector de edad				</label>
+						<select name="driver_age_rule_id" id="driver_age_rule_id"></select>
+					</div>
+		
+					<!-- // Promotion code -->
+					<% if (configuration.promotionCode) { %>
+						<div class="mybooking-selector_promo">
+							<label for="promotion_code">Código de promoción</label>
+							<input type="text" class="mb-form-control" name="promotion_code" id="widget_promotion_code" autocomplete="off">
+						</div>
+					<% } %>
+		
+					<!-- // Search button -->
+					<input class="mb-button mybooking-selector_button" type="submit" value="Buscar" />
+				</div>
+		
+			<% } else { %>
+		
+					<div class="mybooking-selector_group mb-inline">
+		
+						<% if (configuration.simpleLocation) { %>
+							<div class="mybooking-selector_simple_location">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-location"></span>
+								</i>
+								<label for="widget_simple_location_id">
+									Dónde						</label>
+								<select name="simple_location_id" id="widget_simple_location_id" class="mb-form-control"></select>
+							</div>
+						<% } %>
+		
+						<!--
+						// Location code selector:
+						// Opens .mybooking-selector_group
+						// only when Locator or Family fields are activated
+						-->
+						<% if (not_hidden_rental_location_code && configuration.selectorRentalLocation || not_hidden_family_id && configuration.selectFamily ) { %>
+								<div class="mybooking-selector_location widget_rental_location" style="display: none">
+									<i class="mybooking-selector_field-icon">
+										<span class="dashicons dashicons-location"></span>
+									</i>
+									<label for="rental_location_code">
+										Sucursal							</label>
+									<select name="rental_location_code" id="widget_rental_location_code" class="mb-form-control"></select>
+								</div>
+						<% } %>
+		
+						<!-- // Pickup Date -->
+						<div class="mybooking-selector_cal">
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-calendar-alt"></span>
+							</i>
+							<label for="date_from">
+								Fecha entrega					</label>
+							<input class="mb-form-control" name="date_from" id="widget_date_from" type="text" autocomplete="off" readonly="true" placeholder="dd/mm/aa">
+						</div>
+		
+						<% if (configuration.timeToFrom) { %>
+							<!-- // Pickup time -->
+							<div class="mybooking-selector_hour">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-clock"></span>
+								</i>
+								<select class="mb-form-control" id="widget_time_from" name="time_from"></select>
+							</div>
+						<% } else { %>
+							<input type="hidden" name="time_from" value="<%=configuration.defaultTimeStart%>"/>
+						<% } %>
+		
+						<% if (configuration.rentDateSelector === 'date_from_date_to') { %>
+							
+							<!-- // Return date -->
+							<div class="mybooking-selector_cal">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-calendar-alt"></span>
+								</i>
+								<input class="mb-form-control" name="date_to" id="widget_date_to" type="text" autocomplete="off" readonly="true" placeholder="dd/mm/aa">
+							</div>
+		
+							<!-- // Return time -->
+							<% if (configuration.timeToFrom) { %>
+								<div class="mybooking-selector_hour">
+									<i class="mybooking-selector_field-icon">
+										<span class="dashicons dashicons-clock"></span>
+									</i>
+									<select class="mb-form-control" name="time_to" id="widget_time_to"></select>
+								</div>
+							<% } else { %>
+								<input type="hidden" name="time_to" value="<%=configuration.defaultTimeEnd%>"/>
+							<% } %>
+		
+						<% } else if (configuration.rentDateSelector === 'date_from_duration') { %>
+								<!-- // Duration -->
+								<div class="mybooking-selector_hour">
+								<i class="mybooking-selector_field-icon">
+									<span class="dashicons dashicons-clock"></span>
+								</i>
+								<label for="widget_renting_duration">
+									Duración						</label>
+								<select class="mb-form-control" id="widget_renting_duration" name="renting_duration"></select>
+							</div>
+						<% } %>		
+		
+					<!--
+					// Closes div tag for .mybooking-selector_group
+					// and opens a group for the footer
+					// only when Locator or Family fields are activated
+					-->
+					<% if (not_hidden_rental_location_code && configuration.selectorRentalLocation || not_hidden_family_id && configuration.selectFamily ) { %>
+						</div>
+						<div class="mybooking-selector_group mybooking-selector_footer">
+					<% } %>
+		
+					<!-- // Family selector -->
+					<% if (not_hidden_family_id && configuration.selectFamily) { %>
+						<div class="widget_family" style="display: none">
+							<i class="mybooking-selector_field-icon">
+								<span class="dashicons dashicons-list-view"></span>
+							</i>
+							<label for="family_id">
+								Familia					</label>
+							<select name="family_id" id="widget_family_id" class="mb-form-control"></select>
+						</div>
+					<% } %>
+		
+					<!-- Age code selector -->
+					<div class="driver_age_rule" style="display: none">
+						<label for="driver_age_rule_id">
+						Selector de edad				</label>
+						<select name="driver_age_rule_id" id="driver_age_rule_id"></select>
+					</div>
+		
+					<!-- // Promotion code -->
+					<% if (configuration.promotionCode) { %>
+						<div class="mybooking-selector_promo">
+							<label for="promotion_code">Código de promoción</label>
+							<input type="text" class="mb-form-control" name="promotion_code" id="widget_promotion_code" autocomplete="off">
+						</div>
+					<% } %>
+		
+					<!-- // Search button -->
+					<input class="mb-button mybooking-selector_button" type="submit" value="Buscar" />
+				</div>
+		
+			<% } %>
+		
+		</script>
+		<!-- End Wizard searcher -->
+		
+		<!-- Wizard searcher microtemplates -->
+		<!-- Wizard header -->
+		<script id="wizard_steps_summary" type="txt/tmpl">
+			<div class="mybooking-wizard_summary mybooking-summary_detail">
+				<!-- // Delivery data -->
+				<div class="mybooking-summary_item">
+					<div class="mybooking-summary_place">
+						<%= summary.pickupPlaceDescription %>
+					</div>
+		
+					<% if (summary.dateFrom != null) {%>
+						<div class="mybooking-summary_date">
+							<%= summary.dateFrom %> <% if (summary.timeFrom != null) {%><%= summary.timeFrom %><% } %>
+						</div>
+					<% } %>
+				</div>
+		
+				<!-- // Collection data -->
+				<div class="mybooking-summary_item">
+					<div class="mybooking-summary_place">
+						<%= summary.returnPlaceDescription %>
+					</div>
+		
+					<% if (summary.dateTo != null) {%>
+						<div class="mybooking-summary_date">
+							<%= summary.dateTo %> <% if (summary.timeTo != null) {%><%= summary.timeTo %><% } %>
+						</div>
+					<% } %>
+				</div>
+			</div>
+		</script>
+		<!-- End Wizard header -->
+		<!-- Select place micro-template -->
+		<script id="select_place_tmpl" type="txt/tmpl">
+			<div  class="mybooking-wizard_place">
+				<% for (var idx=0; idx<places.length; idx++) { %>
+					<button class="mb-button mybooking-wizard_place-item selector_place" type="button" data-place-id="<%=places[idx].id%>"  data-place-name="<%=places[idx].name%>"><%=places[idx].name%></button>
+				<% } %>
+			</div>
+		</script>
+		<!-- Select place multiple destionations micro-template -->
+		<script id="select_place_multiple_destinations_tmpl" type="txt/tmpl">
+			<div class="mybooking-wizard_place-filter">
+				<button class="mb-button mybooking-wizard_place-item destination-selector" type="button" data-destination-id="all" style="background-color: transparent;border: 1px solid var(--mb-border-color);">
+					Todos    </button>
+				<% for (var idx=0; idx<places.destinations.length; idx++) { %>
+					<button class="mb-button mybooking-wizard_place-item destination-selector" type="button" data-destination-id="<%=places.destinations[idx].id%>">
+						<%=places.destinations[idx].name%>
+					</button>
+				<% } %>
+			</div>
+	
+			<!-- // Places selector -->
+			<% for (var idx=0; idx<places.destinations.length; idx++) { %>
+				<div class="mybooking-wizard_place_title destination-group" data-destination-id="<%=places.destinations[idx].id%>">
+					<span name="<%=places.destinations[idx].id%>"><%=places.destinations[idx].name%></span>
+				</div>
+	
+				<div class="mybooking-wizard_place destination-group" data-destination-id="<%=places.destinations[idx].id%>">
+				<% for (var idy=0; idy<places.destinations[idx].places.length; idy++) { %>
+					<button class="mb-button mybooking-wizard_place-item selector_place" type="button" data-place-id="<%=places.destinations[idx].places[idy].id%>" data-place-name="<%=places.destinations[idx].places[idy].name%>">
+						<%=places.destinations[idx].places[idy].name%>
+					</button>
+				<% } %>
+				</div>
+			<% } %>
+		</script>
+		<!-- Select date micro-template -->
+		<script id="select_date_tmpl" type="txt/tmpl">
+			<div class="mybooking-wizard_date">
+				<div id="selector_date" class="mybooking-wizard_date-calendar"></div>
+			</div>
+		</script>
+		<!-- Select time micro-template -->
+		<script id="select_time_tmpl" type="txt/tmpl">
+			<div class="mybooking-wizard_time">
+				<% for (var idx=0; idx<times.length; idx++) { %>
+					<button type="button" class="mybooking-wizard_time-item selector_time text-center" style="width: 100%" data-value="<%=times[idx]%>"><%= times[idx] %></button>
+				<% } %>
+			</div>
+		</script>
+		<!-- Select age micro-template -->
+		<script id="select_age_tmpl" type="txt/tmpl">
+			<!-- Age code selector -->
+			<div class="row">
+				<div class="col-xs-12">
+					<% for (var idx=0; idx<ages.length; idx++) { %>
+						<button class="btn btn-light text-center mb-2 p-3 age-selector" data-age-id="<%=ages[idx]['id']%>"
+							style="width: 100%">
+							<%=ages[idx]['description']%>
+						</button>
+						<br /><br />
+						<% } %>
+				</div>
+			</div>
+		</script>
+		<!-- End Wizard searcher microtemplates -->
+		<!-- ==== END TEMPLATES ==== -->
+
+		<!-- ==== SCRIPTS ==== -->
+		<!-- Vendor -->
+		<script src="./assets/js/jquery.min.js"></script>
+		<script src="./assets/js/jquery-migrate.min.js"></script>
+		<script src="./assets/js/jquery-ui.min.js"></script>
+		<script src="./assets/js/moment.min.js"></script>
+		<script src="./assets/js/moment-timezone-with-data.min.js"></script>
+		<script src="./assets/js/datepicker.min.js"></script>
+		<!-- End Vendor -->
+
+		<!-- Mybooking -->
+		<script src="./assets/js/init-vars.js"></script>
+		<script>
+			mybooking_init_vars = {
+					...mybooking_init_vars,
+					"mybooking_selector_in_process": "wizard",
+			};
+		</script>
+		<script src="./assets/js/mybooking-init.js"></script>
+		<script src="./assets/js/mybooking-js-engine-bundle.js"></script>
+		<!-- End Mybooking -->
+		<!-- ==== END SCRIPTS ==== -->
+	</body>
+</html>
