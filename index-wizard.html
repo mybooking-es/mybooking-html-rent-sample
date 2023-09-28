@@ -29,7 +29,31 @@
 	<body class="mybooking-selector-wizard">
 		<!-- ==== CONTENT ==== -->
 		<section class="mybooking-selector">
-			<form name="wizard_search_form" method="get" enctype="application/x-www-form-urlencoded"></form>
+			<form name="wizard_search_form" method="get" enctype="application/x-www-form-urlencoded">
+      <!-- Pickup -->
+      <div class="mybooking-selector_wizard-group">
+        <i class="mybooking-selector_field-icon">
+					<span class="dashicons dashicons-location"></span>
+				</i>
+        <label for="place_holder">
+          Where?
+        </label>
+        <input type="text" class="mb-form-control" id="place_holder" aria-describedby="pickupPlaceHolder" placeholder="Select a location" readonly="true">
+      </div>
+
+      <!-- Date -->
+      <div class="mybooking-selector_wizard-group">
+        <i class="mybooking-selector_field-icon">
+					<span class="dashicons dashicons-calendar-alt"></span>
+				</i>
+        <label for="from_holder">
+          When?
+        </label>
+        <input type="text" class="mb-form-control" id="from_holder" aria-describedby="FromHolder" placeholder="Select dates" readonly="true">
+      </div>
+      <button class="mb-button mybooking-selector_button" id="btn_reservation" type="button">Book</button>
+ 				
+			</form>
 		</section>
 		<!-- ==== CONTENT ==== -->
 		
@@ -487,12 +511,14 @@
 
 		<!-- Mybooking -->
 		<script src="./assets/js/init-vars.js"></script>
+
 		<script>
 			mybooking_init_vars = {
-					...mybooking_init_vars,
-					"mybooking_selector_in_process": "wizard",
+			...mybooking_init_vars,
+			"mybooking_selector_in_process": "wizard",
 			};
 		</script>
+
 		<script src="./assets/js/mybooking-init.js"></script>
 		<script src="./assets/js/mybooking-js-engine-bundle.js"></script>
 		<!-- End Mybooking -->
